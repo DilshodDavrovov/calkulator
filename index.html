@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Калькулятор</title>
+  </head>
+  <style>
+      body {
+          user-select: none;
+      }
+      .container {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr;
+          grid-gap: 4px;
+          padding: 4px;
+          border-radius: 5px;
+          max-width: 300px;
+          font-family: "Tahoma";
+          background-color: black;
+      }
+      .item {
+          background-color: #666666;
+          color: white;
+          padding: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          font-weight: bold;
+          border-radius: 100%;
+      }
+      .item:active {
+        background-color: red;
+      }
+
+      form {
+          max-width: 100%;
+      }
+      input {
+          width: 100%;
+          height: 120px;
+          border: none;
+          font-size: 40px;
+          outline: none;
+          text-align: right;
+          background-color: black;
+          color: white;
+      }
+      .input {
+          grid-column: 1/5;
+          padding: 1;
+      }
+      .zero {
+        grid-column: 1/3;
+        border-radius: 40%;
+      }
+      .point {
+        grid-column: 3;
+      }
+      .yellows {
+        background-color: #ff9933;
+        font-size: 22px;
+      }
+      .grays {
+        background-color: #cccccc;
+        color: black;
+      }
+  </style>
+  <body>
+    <div class="container">
+        <div class="input">
+            <form name="form">
+              <input type="text" name="textview" readonly>
+            </form>
+        </div>
+        <div class="item clean grays" onclick="clearinput()">С</div>
+        <div class="item back grays" onclick="turnValue()">+/-</div>
+        <div class="item grays" onclick="insert('%')">%</div>
+        <div class="item yellows" onclick="insert('/')">&divide;</div>
+        <div class="item" onclick="insert('7')">7</div>
+        <div class="item" onclick="insert('8')">8</div>
+        <div class="item" onclick="insert('9')">9</div>
+        <div class="item yellows" onclick="insert('*')">&times;</div>
+        <div class="item" onclick="insert('4')">4</div>
+        <div class="item" onclick="insert('5')">5</div>
+        <div class="item" onclick="insert('6')">6</div>
+        <div class="item yellows" onclick="insert('-')">-</div>
+        <div class="item" onclick="insert('1')">1</div>
+        <div class="item" onclick="insert('2')">2</div>
+        <div class="item" onclick="insert('3')">3</div>
+        <div class="item yellows" onclick="insert('+')">+</div>
+        <div class="item zero" onclick="insert('0')">0</div>
+        <div class="item point" onclick="insert('.')">.</div>
+        <div class="item equal yellows" id="equal" onclick="equal()" >=</div>
+    </div>
+    <script>
+        equaled = false;
+
+        document.onkeydown = function(event) {
+              if (event.code.indexOf('Add')           !== -1) {insert('+')}
+              else if (event.code.indexOf('Subtract') !== -1) {insert('-')}
+              else if (event.code.indexOf('Multiply') !== -1) {insert('*')}
+              else if (event.code.indexOf('Divide')   !== -1) {insert('/')}
+              else if (event.code.indexOf('Decimal')  !== -1) {insert('.')}
+              else if (event.code.indexOf('Enter')    !== -1) {equal()}
+              else if (event.code.indexOf('Backspace')!== -1) {back()}
+              else if (event.code.indexOf('Shift')    !== -1) {clearinput()}
+              else if (event.code.indexOf('Numpad')   !== -1 || event.code.indexOf('Digit')   !== -1 ) {insert(event.code.slice(event.code.length-1))}
+        }
+
+        function insert(num) {
+            if (equaled && !(num == '*' || num =='/' || num =='-' || num =='+' || num =='.' || num =='%')) {
+                clearinput();
+              }
+              else {
+                  equaled = false;
+              };
+            document.form.textview.value = document.form.textview.value + num;
+        }
+        function clearinput() {
+            document.form.textview.value = "";
+            equaled = false;
+        }
+        function back() {
+            document.form.textview.value = document.form.textview.value.slice(0,document.form.textview.value.length-1);
+        }
+        function turnValue() {
+            equal(true);
+        }
+        function equal(turnValue) {
+          equaled = true;
+          if (document.form.textview.value !== "") {
+            try {
+                document.form.textview.value = eval(document.form.textview.value);
+                if (  document.form.textview.value == "undefined") {
+                  document.form.textview.value = ""
+                  return;
+                }
+                remaind = Math.round(document.form.textview.value) - document.form.textview.value;
+                if (String(remaind).length > 4) {
+                      document.form.textview.value = Number(document.form.textview.value).toFixed(2);
+                }
+                if (turnValue == true) {document.form.textview.value = -Number(document.form.textview.value) }
+            } catch (e) {
+                document.form.textview.value = "";
+                //alert("Ошибка в выражении!");
+            }
+          }
+        }
+    </script>
+  </body>
+<html>
